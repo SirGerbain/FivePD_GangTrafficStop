@@ -4,6 +4,7 @@ using CitizenFX.Core;
 using static CitizenFX.Core.Native.API;
 using FivePD.API;
 using System.Collections.Generic;
+using CitizenFX.Core.Native;
 
 namespace SirGerbain_TrafficStop
 {
@@ -25,22 +26,8 @@ namespace SirGerbain_TrafficStop
 
         Vector3[] spawnLocations =
         {
-            new Vector3(98, -1935, 21),
-            new Vector3(319, -2078, 18),
-            new Vector3(428, -1867, 27),
-            new Vector3(509, -1718, 29),
-            new Vector3(557, -1921, 25),
-            new Vector3(849, -2340, 30),
-            new Vector3(988, -2374, 31),
-            new Vector3(498, -2568, 7),
-            new Vector3(-106, -2442, 6),
-            new Vector3(236, -1723, 29),
-            new Vector3(913, -1240, 26),
-            new Vector3(-178, -1301, 31),
-            new Vector3(-89, -1424, 30),
-            new Vector3(127, -410, 41),
-            new Vector3(1170, -1668, 36),
-            new Vector3(621, -692, 13)
+            //new Vector3(98, -1935, 21),
+            //new Vector3(319, -2078, 18),
         };
 
         public SirGerbain_TrafficStop()
@@ -88,6 +75,7 @@ namespace SirGerbain_TrafficStop
         public async override Task OnAccept()
         {
             InitBlip();
+            Notify("Officer needs IMMEDIATE backup at traffic stop");
 
         }
 
@@ -219,28 +207,15 @@ namespace SirGerbain_TrafficStop
             SetRelationshipBetweenGroups((int)Relationship.Companion, (uint)GetHashKey("GSF"), (uint)GetHashKey("GSF"));
 
         }
-
-        private void ClearAllRelationships()
+        private void Notify(string message)
         {
-            /*ClearRelationshipBetweenGroups((int)Relationship.Hate, (uint)GetHashKey("GANG_A"), (uint)GetHashKey("GANG_B"));
-            ClearRelationshipBetweenGroups((int)Relationship.Hate, (uint)GetHashKey("GANG_B"), (uint)GetHashKey("GANG_A"));
-
-            ClearRelationshipBetweenGroups((int)Relationship.Hate, (uint)GetHashKey("PLAYER"), (uint)GetHashKey("GANG_A"));
-            ClearRelationshipBetweenGroups((int)Relationship.Hate, (uint)GetHashKey("GANG_A"), (uint)GetHashKey("PLAYER"));
-            ClearRelationshipBetweenGroups((int)Relationship.Hate, (uint)GetHashKey("PLAYER"), (uint)GetHashKey("GANG_B"));
-            ClearRelationshipBetweenGroups((int)Relationship.Hate, (uint)GetHashKey("GANG_B"), (uint)GetHashKey("PLAYER"));
-
-            ClearRelationshipBetweenGroups((int)Relationship.Companion, (uint)GetHashKey("GANG_A"), (uint)GetHashKey("GANG_A"));
-            ClearRelationshipBetweenGroups((int)Relationship.Companion, (uint)GetHashKey("GANG_B"), (uint)GetHashKey("GANG_B"));
-
-            RemoveRelationshipGroup((uint)GetHashKey("GANG_B"));
-            RemoveRelationshipGroup((uint)GetHashKey("GANG_A"));*/
+            ShowNetworkedNotification(message, "CHAR_CALL911", "CHAR_CALL911", "Dispatch", "AIR-1", 15f);
         }
-
-        public override void OnCancelBefore()
+        private void DrawSubtitle(string message, int duration)
         {
-            ClearAllRelationships();
-            base.OnCancelBefore();
+            API.BeginTextCommandPrint("STRING");
+            API.AddTextComponentSubstringPlayerName(message);
+            API.EndTextCommandPrint(duration, false);
         }
     }
 }
